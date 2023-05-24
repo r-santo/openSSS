@@ -30,7 +30,7 @@
 %           UseAttenuation              - operation mode for the mask delineation
 %           AccelerationFactor             - step for the iteration over the detectors of the rings
 %
-% OUTPUT:   sinograms                   - estimated scatters 
+% OUTPUT:   Sinograms                   - estimated scatters 
 %
 % Script by: 
 % Rodrigo JOSE SANTO - UMC Utrecht
@@ -123,11 +123,11 @@ function Sinograms = MaskGenerator(ActivityMap, AttenuationMap, ImageSize, Geome
     end
     
     % order of sinograms in the file format used, to convert from two ring subscripts to a linear ring difference index
-    OrderIndex = SinogramIndex(1:NrRings,1:NrRings)';
-    [~,OrderIndex] = sort(OrderIndex(:));
+    SinogramOrder = SinogramIndex(1:NrRings,1:NrRings)';
+    [~,SinogramOrder] = sort(SinogramOrder(:));
 
     Sinograms = reshape(Sinograms, NrDetectors+1,NrDetectors/2,NrSinograms);
-    Sinograms = Sinograms(:,:,OrderIndex);
+    Sinograms = Sinograms(:,:,SinogramOrder);
 
     toc;
 end

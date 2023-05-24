@@ -39,7 +39,7 @@
 %__________________________________________________________________________________________________________________
 
 function ScaleFactor = BackProjectionScatterRandFit(PromptSinogram, ScatterSinogram, RandomSinogram, MaskSinogram, GridSize, ImageSize, Geometry, SinogramCoordinates, SinogramIndex, AccelerationFactor)
-    if nargin == 7
+    if nargin == 9
         AccelerationFactor = 1;
     end
     %%  scanner information, input images, constants and lookup tables for main algorithm
@@ -55,21 +55,21 @@ function ScaleFactor = BackProjectionScatterRandFit(PromptSinogram, ScatterSinog
     SensitivityImage = zeros(GridSize, 'single');
 
     % order of sinograms in the file format used, to convert from a linear ring difference index to two ring subscripts
-    OrderIndex = SinogramIndex(1:NrRings,1:NrRings)';
+    SinogramOrder = SinogramIndex(1:NrRings,1:NrRings)';
 
     % masked sinograms to the tails of the scatter, as calculated previously based on the attenuation/activity maps
     ScattersMasked = single(MaskSinogram >= 1).*ScatterSinogram;
-    ScattersMasked = ScattersMasked(:,:,OrderIndex(:));
+    ScattersMasked = ScattersMasked(:,:,SinogramOrder(:));
     ScattersMasked = reshape(ScattersMasked, size(ScattersMasked, 1), size(ScattersMasked, 2), NrRings, NrRings);
     clearvars ScatterSinogram;
 
     RandomsMasked = single(MaskSinogram >= 1).*RandomSinogram;
-    RandomsMasked = RandomsMasked(:,:,OrderIndex(:));
+    RandomsMasked = RandomsMasked(:,:,SinogramOrder(:));
     RandomsMasked = reshape(RandomsMasked, size(RandomsMasked, 1), size(RandomsMasked, 2), NrRings, NrRings);
     clearvars RandomSinogram;
 
     PromptsMasked = single(MaskSinogram >= 1).*single(PromptSinogram);
-    PromptsMasked = PromptsMasked(:,:,OrderIndex(:));
+    PromptsMasked = PromptsMasked(:,:,SinogramOrder(:));
     PromptsMasked = reshape(PromptsMasked, size(PromptsMasked, 1), size(PromptsMasked, 2), NrRings, NrRings);
     clearvars PromptSinogram;
     clearvars MaskSinogram;
@@ -140,20 +140,20 @@ function ScaleFactor = BackProjectionScatterRandFit(PromptSinogram, ScatterSinog
         SensitivityImage = SensitivityImage + SensitivityImageTemp;
     end
     
-    test1 = ScatterImage./SensitivityImage;
-    test1(isnan(test1)) = 0;
+    ScatterBackProjected = ScatterImage./SensitivityImage;
+    ScatterBackProjected(isnan(ScatterBackProjected)) = 0;
 
-    test2 = ActivityImage./SensitivityImage;
-    test2(isnan(test2)) = 0;
+    ActivityBackProjected = ActivityImage./SensitivityImage;
+    ActivityBackProjected(isnan(ActivityBackProjected)) = 0;
 
-    test3 = RandomImage./SensitivityImage;
-    test3(isnan(test3)) = 0;
+    RandomsBackProjected = RandomImage./SensitivityImage;
+    RandomsBackProjected(isnan(RandomsBackProjected)) = 0;
 
-    test4 = test2 - test3;
-    test4(test4 < 0) = 0;
+    TailsBackProjected = ActivityBackProjected - RandomsBackProjected;
+    TailsBackProjected(TailsBackProjected < 0) = 0;
 
     % Fit a single scale factor
-    [Fitted, ~] = fit(test1(:)*1e10, test4(:), 'poly1', 'Lower', [0, 0], 'Upper', [Inf, 0]);
+    [Fitted, ~] = fit(ScatterBackProjected(:)*1e10, TailsBackProjected(:), 'poly1', 'Lower', [0, 0], 'Upper', [Inf, 0]);
     ScaleFactor = Fitted.p1*1e10;
     
     toc;
