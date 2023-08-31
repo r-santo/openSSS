@@ -5,12 +5,9 @@
  It was validated for three pet system geometries, on Monte-Carlo simulated data and two vendor's specific reconstruction platforms. The results have been accepted for an oral presentation at IEEE MIC2023:
  
  openSSS: an open-source implementation of scatter estimation for 3D TOF-PET
- 
-R. José Santo1, A. Salomon2, H. W.A.M. de Jong3, S. Stute4, 5, T. Merlin6, C. Beijst1
-
-https://www.eventclass.org/contxt_ieee2023/scientific/online-program/session?s=M-08
-
-IEEE NSS MIC 2023 Conference proceedings
+ <br />R. José Santo1, A. Salomon2, H. W.A.M. de Jong3, S. Stute4, 5, T. Merlin6, C. Beijst1
+ <br />https://www.eventclass.org/contxt_ieee2023/scientific/online-program/session?s=M-08
+ <br />IEEE NSS MIC 2023 Conference proceedings
 
  1. UMC Utrecht, Imaging & Oncology, Utrecht, The Netherlands; r.josesanto@umcutrecht.nl
  2. Philips Research Europe, Eindhoven, Netherlands
