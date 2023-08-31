@@ -61,11 +61,6 @@ load('./Data/SiemensVision600.mat', 'TOFResolution')
 % Sinograms are ordered based on the ring difference, starting on the negative (0, -1, 1, -2, 2, ...)
 [LORCoordinates, SinogramIndex] = SinogramCoordinates(NrSectorsTrans, NrSectorsAxial, NrModulesAxial, NrModulesTrans, NrCrystalsTrans, NrCrystalsAxial);
 
-%% Perform the first estimation
-scanner = 'PET_SIEMENS_VISION600';
-phantom = 'NEMA-IQ-Official-7200s-1to4';
-dataFolder = sprintf('/mnt/sata3/rjosesan/GATE_MacGen/generated_macros/%s/for_PETMRISERVER/%s/Distribution', phantom, scanner);
-
 %% Information on the specific settings for the acqusition
 % Range of measured time difference of the detected events, in absolute value (ps)
 TOFRange = 1000;
