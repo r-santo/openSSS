@@ -27,34 +27,38 @@
 %__________________________________________________________________________________________________________________
 %% Compile ray tracing function
 % Only needed once
-if ~isfile("./RayTracing3D.mexa64") && ~isfile("./RayTracing3D.mexw64") && ~isfile("./RayTracing3D.mexmaci64")
+if ~isfile("./RayTracing3DTOF.mexa64") && ~isfile("./RayTracing3DTOF.mexw64") && ~isfile("./RayTracing3DTOF.mexmaci64")
     mex RayTracing3DTOF.cpp
 end
 
 %% Import information about the system
+% Scanner name
+ScannerName = 'ToyScanner';
+FileName = sprintf('./Data/%s.mat', ScannerName);
+
 % Geometry and normalization factors, from reconstruction library
 % The format is [Ring, Detector, Coordinate], with coordinates ordered by [x, y, z]
 % Units are in cm
-load('./Data/SiemensVision600.mat', 'Geometry', 'NormalVectors')
-% Size of the scanner, in mm
+load(FileName, 'Geometry', 'NormalVectors')
+% Size of the scanner, in mm (here converted from cm to mm)
 DeviceSize = [(max(Geometry(:,:,1),[],'All') - min(Geometry(:,:,1),[],'All')),...
               (max(Geometry(:,:,2),[],'All') - min(Geometry(:,:,2),[],'All')),...
               (max(Geometry(:,:,3),[],'All') - min(Geometry(:,:,3),[],'All'))]*10;
 
-% Values from the official Siemens specifications
-load('./Data/SiemensVision600.mat', 'NrSectorsAxial', 'NrSectorsTrans', 'NrModulesAxial', 'NrModulesTrans', 'NrCrystalsAxial', 'NrCrystalsTrans')
-NrRingsSimulated = NrSectorsAxial * NrModulesAxial * NrCrystalsAxial;
+% Values from the scanner design
+load(FileName, 'NrSectorsAxial', 'NrSectorsTrans', 'NrModulesAxial', 'NrModulesTrans', 'NrCrystalsAxial', 'NrCrystalsTrans')
+NrRings = NrSectorsAxial * NrModulesAxial * NrCrystalsAxial;
 NrCrystals = NrSectorsTrans * NrModulesTrans* NrCrystalsTrans;
 
 % Size of each detector unit/crystal [x, y] in mm
-load('./Data/SiemensVision600.mat', 'DetectorSize');
+load(FileName, 'DetectorSize');
 
 % Energy resolution of the system, in decimal units (max 1)
-load('./Data/SiemensVision600.mat', 'EnergyResolution');
+load(FileName, 'EnergyResolution');
 
 % Information on the time resolution of the detectors, in case of
 % TOF-compatibility, in ps
-load('./Data/SiemensVision600.mat', 'TOFResolution')
+load(FileName, 'TOFResolution')
 
 % Creates custom sinogram format, that indexes the radial and angular component of LORs relative to each other
 % starting from the middle of the first sector and with format [radial, angular]
@@ -69,7 +73,7 @@ TOFRange = 1000;
 EnergyThreshold = 435;
 
 % Number of TOF bins to simulate for
-TOFbins = 6;
+TOFbins = 4;
 
 %% Read the images
 % This includes both the actual image and the corresponding voxel size, given in mm
@@ -79,19 +83,18 @@ load('./Data/ActivityImage.mat', 'ActivityMap','ActivitySize');
 % It is possible to crop and downscale the images. This is recommended to avoid
 % running out of memmory and crashing the computer
 % Units in mm
-
-DesiredDimensions = [90, 90 ,48]/2;
+DesiredDimensions = [60, 60 ,32];
 DesiredSize = [size(ActivityMap,1)*ActivitySize(1), ...
-                    size(ActivityMap,1)*ActivitySize(2), ...
-                    DeviceSize(3)];
+               size(ActivityMap,1)*ActivitySize(2), ...
+               DeviceSize(3)];
 
 % Coordinates for the bounds of the image to be used to estimate scatters
-% in the format [xStart, yStart, zStart, xEnd, yEnd, zEnd] and in mm
+% in the format [xStart, yStart, zStart, xEnd, yEnd, zEnd] and in cm
 ImageSize = [-DesiredSize(1)/2, -DesiredSize(2)/2, -DesiredSize(3)/2, ...
               DesiredSize(1)/2, DesiredSize(2)/2, DesiredSize(3)/2]/10;
 
 % Coordinates for the bounds of the backprojected data to be used in the scalling of scatters
-% in the format [xStart, yStart, zStart, xEnd, yEnd, zEnd] and in mm
+% in the format [xStart, yStart, zStart, xEnd, yEnd, zEnd] and in cm
 FittingSize = [-DesiredSize(1)/2, -DesiredSize(2)/2, -DeviceSize(3)/2, ...
               DesiredSize(1)/2, DesiredSize(2)/2, DeviceSize(3)/2]/10;
 
@@ -104,16 +107,18 @@ ActivityMapDownscaled = CropAndDownscale(ActivityMap, ActivitySize, DesiredSize,
 
 %% Settings for SSS, to be balanced between speed and accuracy
 % Number of rings  and detectors (per ring) to simulate, the rest being interpolated
-NrRingsSimulated = 6;
+NrRingsSimulated = 3;
 NrDetectorsSimulated = NrCrystals/4;
 
 % Step to sample scatter points in each diretion, in units of integer voxels
-SampleStep = [3, 3, 2];
+% Example means that scatter points are sampled every 3 voxels in x
+% direction, 3 voxels in y direction and every 3 voxels in z direction
+SampleStep = [3, 3, 2]; 
 
 % Detectors to be skipped when generating the tail-mask and backprojecting
-% events. It reduces the number of LORs considered, so fitting may be less
-% representative of the full distrubution of events
-AccelerationFactor = 6;
+% events. It reduces the number of LORs considered, so it is faster but fitting 
+% may be less representative of the full distrubution of events
+AccelerationFactor = 2;
 
 % Path where to save the scatter estimates of each time bin. These are not
 % stored in memory to avoid crashing the computer
