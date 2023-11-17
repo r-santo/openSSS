@@ -324,7 +324,7 @@ function Scatters = SingleScatterSimulationTOF(ActivityMap, AttenuationMap, Imag
         
         % correct for differences in counts per sinogram point (this may occur due to asymmetric use of detectors in different rings)
         ScatterCounts(ScatterCounts == 0) = SmallNumber;     % prevent dividing by zero
-        ScatterSlice = ScatterSlice;% ./ sinograms_counts_per_slice;
+        ScatterSlice = ScatterSlice./ ScatterCounts;
         
         % add sinograms of this slice to the other slices
         Scatters = Scatters + ScatterSlice;
@@ -335,6 +335,9 @@ function Scatters = SingleScatterSimulationTOF(ActivityMap, AttenuationMap, Imag
     %% Postprocessing
     
     toc;
+    % remove warning on interpolation
+    % Prevent warning message from interpolation
+    warning('off','MATLAB:scatteredInterpolant:DupPtsAvValuesWarnId')
     % interpolate sinogram of current slice
     Scatters = InterpolateAllBins(Scatters, Rings, SinogramIndex, Detectors, SinogramCoordinates, SavePath);
     toc;
@@ -416,7 +419,8 @@ function InterpolatedSinograms = InterpolateAllBins(SinogramsBinned, Rings, Sino
         SinogramsCurrentBin = reshape(SinogramsCurrentBin, RadialDim, AngularDim, NrRingsUsed, NrRingsUsed);
         SinogramsCurrentBin = permute(SinogramsCurrentBin, [1, 2, 4, 3]);
         % some grid vectors had their orientation changed to warn interpn that they correspond indeed to grid vectors
-        SinogramsInerpolatedCurrentBin = single(interpn(1:RadialDim, 1:AngularDim, Rings(:), Rings(:), double(SinogramsCurrentBin), 1:RadialDim, 1:AngularDim, (1:NrRings)', (1:NrRings)', 'linear'));
+        SinogramsInerpolatedCurrentBin = single(interpn(1:RadialDim, 1:AngularDim, Rings(:), Rings(:), SinogramsCurrentBin, 1:RadialDim, 1:AngularDim, (1:NrRings)', (1:NrRings)', 'linear'));
+        clear SinogramsCurrentBin
         SinogramsInerpolatedCurrentBin = reshape(SinogramsInerpolatedCurrentBin, RadialDim, AngularDim, NrRings^2);
 
         % order in the file format used for the sinograms
@@ -429,6 +433,7 @@ function InterpolatedSinograms = InterpolateAllBins(SinogramsBinned, Rings, Sino
         fclose(fileID);
 
         InterpolatedSinograms = InterpolatedSinograms + SinogramsInerpolatedCurrentBin(:,:,SinogramOrder);
+        clear SinogramsInerpolatedCurrentBin
     end
 end
 %%_______________________________________________________________________________________________________________________________________________________________________________________________

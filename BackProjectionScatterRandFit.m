@@ -151,7 +151,11 @@ function ScaleFactor = BackProjectionScatterRandFit(PromptSinogram, ScatterSinog
 
     TailsBackProjected = ActivityBackProjected - RandomsBackProjected;
     TailsBackProjected(TailsBackProjected < 0) = 0;
-
+    
+    % Prevent warning message from fitting
+    warning('off','curvefit:fit:nonDoubleYData')
+    warning('off','curvefit:fit:nonDoubleXData')
+    
     % Fit a single scale factor
     [Fitted, ~] = fit(ScatterBackProjected(:)*1e10, TailsBackProjected(:), 'poly1', 'Lower', [0, 0], 'Upper', [Inf, 0]);
     ScaleFactor = Fitted.p1*1e10;
