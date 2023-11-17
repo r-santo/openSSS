@@ -6,7 +6,7 @@
  
  openSSS: an open-source implementation of scatter estimation for 3D TOF-PET
  <br />R. José Santo1, A. Salomon2, H. W.A.M. de Jong3, S. Stute4, 5, T. Merlin6, C. Beijst1
- <br />https://www.eventclass.org/contxt_ieee2023/scientific/online-program/session?s=M-08
+ <br />https://www.eventclass.org/contxt_ieee2023/scientific/online-program/session?s=M-09
  <br />IEEE NSS MIC 2023 Conference proceedings
 
  1. UMC Utrecht, Imaging & Oncology, Utrecht, The Netherlands; r.josesanto@umcutrecht.nl
