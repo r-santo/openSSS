@@ -58,12 +58,15 @@ load(FileName, 'EnergyResolution');
 
 % Information on the time resolution of the detectors, in case of
 % TOF-compatibility, in ps
-load(FileName, 'TOFResolution')
+load(FileName, 'TOFResolution');
 
 % Creates custom sinogram format, that indexes the radial and angular component of LORs relative to each other
 % starting from the middle of the first sector and with format [radial, angular]
 % Sinograms are ordered based on the ring difference, starting on the negative (0, -1, 1, -2, 2, ...)
 [LORCoordinates, SinogramIndex] = SinogramCoordinates(NrSectorsTrans, NrSectorsAxial, NrModulesAxial, NrModulesTrans, NrCrystalsTrans, NrCrystalsAxial);
+% Creates helper variables with coordinates of detectors and rings 
+% associated with every sinogram coordinate and index
+[DetectorCoordinates, RingCoordinates] = SinogramToSpatial(NrSectorsTrans, NrSectorsAxial, NrModulesAxial, NrModulesTrans, NrCrystalsTrans, NrCrystalsAxial, Geometry);
 
 %% Information on the specific settings for the acqusition
 % Range of measured time difference of the detected events, in absolute value (ps)

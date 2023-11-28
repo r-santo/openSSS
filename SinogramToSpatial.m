@@ -18,8 +18,9 @@
 % This is openSSS version 0.1
 %
 %__________________________________________________________________________________________________________________
-%% SinogramCoordinates
-% Creates the matrix for the transformation from detector index to sinogram coordinates
+%% SinogramToSpatial
+% Gives the spatial coordinates of the detectors associated with every
+% coordinate in the sinograms
 % 
 % INPUT:    NrSectorsTrans                 - number of sector in the transaxial direction
 %           NrSectorsAxial                 - number of sector in the axial direction
@@ -28,14 +29,14 @@
 %           NrCrystalsTrans                - number of crystals inside a module in the transaxial direction
 %           NrCrystalsAxial                - number of crystals inside a module in the axial direction
 %
-% OUTPUT:   LORCoordinates                 - sinogram coordinates for every detector combination
-%           SinogramIndex                  - sinogram coordinates for every ring combination
+% OUTPUT:   DetectorCoordinates            - spatial coordinates of detectors for every sinogram position (Radial,Angular,Detector,Coordinate) (X,Y)
+%           RingCoordinates                - spatial coordinates of rings for every sinogram index (Index,Ring) (Z)
 %
 % Script by: 
 % Rodrigo JOSE SANTO - UMC Utrecht
 %__________________________________________________________________________________________________________________
 
-function [LORCoordinates, SinogramIndex] = SinogramCoordinates(NrSectorsTrans, NrSectorsAxial, NrModulesAxial, NrModulesTrans, NrCrystalsTrans, NrCrystalsAxial)
+function [DetectorCoordinates, RingCoordinates] = SinogramToSpatial(NrSectorsTrans, NrSectorsAxial, NrModulesAxial, NrModulesTrans, NrCrystalsTrans, NrCrystalsAxial,Geom)
 
     NrRings = NrSectorsAxial * NrModulesAxial * NrCrystalsAxial;
     NrCrystalsPerRing = NrSectorsTrans * NrModulesTrans * NrCrystalsTrans;
@@ -59,7 +60,7 @@ function [LORCoordinates, SinogramIndex] = SinogramCoordinates(NrSectorsTrans, N
     % which implies that the top crystal's ID is 0 and all LORs having phi=0 are aligned with the positive y-axis
     DistanceCrystalId0toFirstSectorCenter = (NrModulesTrans * NrCrystalsTrans) / 2;
     
-    LORCoordinates = zeros(NrCrystalsPerRing, NrCrystalsPerRing, 2);
+    DetectorCoordinates = zeros(NrCrystalsPerRing, NrCrystalsPerRing/2, 2, 2, 'single');
 
     % Generates first the coordinates on each sinogram
     for Detector1 = 1:NrCrystalsPerRing
@@ -119,16 +120,19 @@ function [LORCoordinates, SinogramIndex] = SinogramCoordinates(NrSectorsTrans, N
                         Angular = (2 * IdA - Radial) / 2;
                     end
                 end
-                
-                LORCoordinates(Detector1, Detector2, 1) = floor(Angular) + 1;
-                LORCoordinates(Detector1, Detector2, 2) = floor(Radial + RadialSize / 2) + 1;
+
+                if Detector1 >= Detector2
+                    DetectorCoordinates(floor(Radial + RadialSize / 2) + 1, floor(Angular) + 1, 1, :) = Geom(1,Detector1,1:2);
+                    DetectorCoordinates(floor(Radial + RadialSize / 2) + 1, floor(Angular) + 1, 2, :) = Geom(1,Detector2,1:2);
+                end
             end
         end
     end
 
     % Generates the order of the sinograms based on the ring difference
     % Increasing in absolute value, first the negative: 0, -1, 1, -2, 2, ...
-    SinogramIndex = zeros(NrRings,NrRings);
+    RingCoordinates = zeros(NrRings*NrRings,2, 'single');
+
     for Ring1 = 1:NrRings
         for Ring2 = 1:NrRings
             RingDifference = abs(Ring2 - Ring1);
@@ -152,7 +156,10 @@ function [LORCoordinates, SinogramIndex] = SinogramCoordinates(NrSectorsTrans, N
                     CurrentSinogramIndex = CurrentSinogramIndex + NrRings - RingDifference + Ring1 - RingDifference;
                 end
             end
-            SinogramIndex(Ring1, Ring2) = CurrentSinogramIndex;
+            
+            RingCoordinates(CurrentSinogramIndex, 1) = Geom(Ring1, 1, 3);
+            RingCoordinates(CurrentSinogramIndex, 2) = Geom(Ring2, 1, 3);
+
         end
     end
 end
