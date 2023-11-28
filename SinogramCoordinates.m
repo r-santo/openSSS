@@ -21,14 +21,14 @@
 %% SinogramCoordinates
 % Creates the matrix for the transformation from detector index to sinogram coordinates
 % 
-% INPUT:    NrSectorsTrans                 - Number of sector in the transaxial direction
-%           NrSectorsAxial                 - Number of sector in the axial direction
-%           NrModulesAxial                 - Number of modules inside a sector in the axial direction
-%           NrModulesTrans                 - Number of modules inside a sector in the transaxial direction
-%           NrCrystalsTrans                - Number of crystals inside a module in the transaxial direction
-%           NrCrystalsAxial                - Number of crystals inside a module in the axial direction
+% INPUT:    NrSectorsTrans                 - number of sector in the transaxial direction
+%           NrSectorsAxial                 - number of sector in the axial direction
+%           NrModulesAxial                 - number of modules inside a sector in the axial direction
+%           NrModulesTrans                 - number of modules inside a sector in the transaxial direction
+%           NrCrystalsTrans                - number of crystals inside a module in the transaxial direction
+%           NrCrystalsAxial                - number of crystals inside a module in the axial direction
 %
-% OUTPUT:   Coordinates                    - fitted scaling factor for the estimated sinograms 
+% OUTPUT:   Coordinates                    - sinogram coordinates for every detector combination
 %
 % Script by: 
 % Rodrigo JOSE SANTO - UMC Utrecht

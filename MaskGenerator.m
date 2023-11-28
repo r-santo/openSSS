@@ -28,9 +28,9 @@
 %           SinogramCoordinates         - array with the sinogram positions for detector combinations
 %           SinogramIndex               - array with the order of the sinograms for ring combinations
 %           UseAttenuation              - operation mode for the mask delineation
-%           AccelerationFactor             - step for the iteration over the detectors of the rings
+%           AccelerationFactor          - step for the iteration over the detectors of the rings
 %
-% OUTPUT:   Sinograms                   - estimated scatters 
+% OUTPUT:   Sinograms                   - sinogram mask of tails 
 %
 % Script by: 
 % Rodrigo JOSE SANTO - UMC Utrecht
