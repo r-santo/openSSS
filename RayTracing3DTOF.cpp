@@ -279,7 +279,7 @@ int BoxIntersectTest(double const *GridSize, double const *GridBounds, double co
 double tMin, tMax, yTMin, yTMax, zTMin, zTMax;
 double xDiv, yDiv, zDiv;
 
-xDiv = 1/(LineCoordinates[3] - LineCoordinates[0]);
+xDiv = 1/(LineCoordinates[3] - LineCoordinates[0] + 1e-20);
 
 if (xDiv >= 0) // t-coordinate of box bounds
 {
@@ -292,7 +292,7 @@ else
      tMax = (GridBounds[0] - LineCoordinates[0])*xDiv;
 }
 
-yDiv = 1/(LineCoordinates[4] - LineCoordinates[1]);
+yDiv = 1/(LineCoordinates[4] - LineCoordinates[1] + 1e-20);
 
 if (yDiv >= 0) 
 {
@@ -312,7 +312,7 @@ if (yTMin > tMin)
 if (yTMax < tMax)
 	tMax = yTMax;
 
-zDiv = 1/(LineCoordinates[5] - LineCoordinates[2]);
+zDiv = 1/(LineCoordinates[5] - LineCoordinates[2] + 1e-20);
 
 if (zDiv >= 0) 
 {
