@@ -34,21 +34,21 @@
 % Rodrigo JOSE SANTO - UMC Utrecht
 %__________________________________________________________________________________________________________________
 %% Information on PET-scanner
-ScannerName = 'uExplorer';
+ScannerName = 'ExampleScanner';
 
-NrSectorsAxial = 8;          % number of sectors axial - contains modules 
-NrSectorsTrans = 24;         % number of sectors transaxial - contains modules side by side in the same slope angle
+NrSectorsAxial = 2;          % number of sectors axial - contains modules 
+NrSectorsTrans = 20;         % number of sectors transaxial - contains modules side by side in the same slope angle
 SectorGapAxial = 0.5;        % sector gap axial
 AngleStart = 0;              % angle of the first sector
 Radius = 40;                 % radius PET-scanner
-NrModulesAxial = 13;          % number of modules axial - contains detectors
-NrModulesTrans = 6;          % number of modules transaxial - contains detectors
-ModulesGapAxial = 0.1;       % module gap axial
-ModulesGapTrans = 0.1;       % module gap transaxial
-NrCrystalsAxial = 6;         % number of detectors per module axial
-NrCrystalsTrans = 6;         % number of detectors per module transaxial
-DetectorSize = [0.27, 0.27];   % size of detector transaxial and axial
-DetectorGap = [0.01, 0.01];  % detector gap transaxial and axial
+NrModulesAxial = 2;          % number of modules axial - contains detectors
+NrModulesTrans = 4;          % number of modules transaxial - contains detectors
+ModulesGapAxial = 0.5;       % module gap axial
+ModulesGapTrans = 0.5;       % module gap transaxial
+NrCrystalsAxial = 2;         % number of detectors per module axial
+NrCrystalsTrans = 5;         % number of detectors per module transaxial
+DetectorSize = [0.4, 0.4];   % size of detector transaxial and axial
+DetectorGap = [0.05, 0.05];  % detector gap transaxial and axial
 
 % Parameters relevant for scatter estimation only
 EnergyResolution = 0.15;     % energy resolution
