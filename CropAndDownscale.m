@@ -43,7 +43,7 @@ function DownscaledImage = CropAndDownscale(ImageMap, VoxelSize, CroppedSize, Do
         fprintf("Cropping X\n")
         DownscaledImage = DownscaledImage(Center(1) - PixelHalfThickness(1) : Center(1) + PixelHalfThickness(1),:,:);
     elseif Center(1) < PixelHalfThickness(1)
-        fprintf("Padding Z\n")
+        fprintf("Padding X\n")
         DownscaledImage = padarray(DownscaledImage, [PixelHalfThickness(1) - Center(1), 0, 0], 0, 'both');
     end
 
@@ -51,7 +51,7 @@ function DownscaledImage = CropAndDownscale(ImageMap, VoxelSize, CroppedSize, Do
         fprintf("Cropping Y\n")
         DownscaledImage = DownscaledImage(:,Center(2) - PixelHalfThickness(2) : Center(2) + PixelHalfThickness(2),:);
     elseif Center(2) < PixelHalfThickness(2)
-        fprintf("Padding Z\n")
+        fprintf("Padding Y\n")
         DownscaledImage = padarray(DownscaledImage, [0, PixelHalfThickness(2) - Center(2), 0], 0, 'both');
     end
 
