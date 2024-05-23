@@ -21,7 +21,7 @@
 %% 3D Single Scatter Simulation (SSS)
 % Performs TOF scatter estimation based on the SSS algorithm by Watson
 %
-% INPUT:    ActivityMap                 - activity maps estimation
+% INPUT:    ActivityMap                 - activity map estimation
 %           AttenuationMap              - attenuation map
 %           ImageSize                   - attenuation and activity image size [-x -y -z x y z] (mm)
 %           Geometry                    - 3D array with the (x,y,z) positions of the detectors [rings, detectors, coordinates(x,y,z)]
@@ -39,7 +39,7 @@
 %           NrBins                      - number of TOF bins
 %           SavePath                    - path where to save the sinograms
 %
-% OUTPUT:   Scatters                   - estimated scatters summed scatter
+% OUTPUT:   Scatters                   - TOF summed estimated scatters
 %
 % Script by: 
 % Rodrigo JOSE SANTO - UMC Utrecht
@@ -52,18 +52,18 @@ function Scatters = SingleScatterSimulationTOF(ActivityMap, AttenuationMap, Imag
                                                SavePath)
     %%  scanner information, input images, constants and lookup tables for main algorithm
     % define some constants
-    [xDim, yDim, zDim] = size(AttenuationMap);      % dimensions of the contour image
+    [xDim, yDim, zDim] = size(AttenuationMap);         % dimensions of the attenuation map
     NrDetectors = size(Geometry,2);                    % number of detectors used
     NrRings = size(Geometry,1);                        % number of rings
 
     % the crop for the attenuation and activity map expands half the detector height for each side of the FOV
-    zVoxelSize = (ImageSize(6) - ImageSize(3))/zDim;     % real distance between middle two slices in contour_image
+    zVoxelSize = (ImageSize(6) - ImageSize(3))/zDim;   % real distance between middle two slices in contour_image
     
-    EnergyReferenceJoule = 511.0E3 * 1.6E-19;                     % photon energy (J)
+    EnergyReferenceJoule = 511.0E3 * 1.6E-19;          % photon energy (J)
     SmallNumber = 10^(-15);                            % used to prevent dividing by zero
-    EnergyReference = 511.0;                             % energy used for generation of attenuation map (keV)
-    GridSize = size(ActivityMap);                   % dimensions for the ray tracing grid
-    GridBounds = ImageSize;                        % real dimensions of the ray tracing grid
+    EnergyReference = 511.0;                           % energy used for generation of attenuation map (keV)
+    GridSize = size(ActivityMap);                      % dimensions for the ray tracing grid
+    GridBounds = ImageSize;                            % real dimensions of the ray tracing grid
 
     % TOF characteristics
     BinWidth = 2*TOFRange/NrBins;                % width of the bin (ps)
@@ -94,7 +94,7 @@ function Scatters = SingleScatterSimulationTOF(ActivityMap, AttenuationMap, Imag
         end
     end
     
-    % Compress the attenuation_table, so that it just includes the energy for 511kEV and the ratios for water of all other energies
+    % Compress the AttenuationTable, so that it just includes the energy for 511kEV and the ratios for water of all other energies
     AttenuationRatios = zeros(size(AttenuationTable,1), 2);
     AttenuationRatios(:,1) = AttenuationTable(:,1);
     AttenuationRatios(:,2) = AttenuationTable(:,2)./AttenuationTable(EnergyIndex,2);
@@ -112,7 +112,7 @@ function Scatters = SingleScatterSimulationTOF(ActivityMap, AttenuationMap, Imag
     
     % calculate TOF efficiencency
     LightSpeed = 299792458.0*1e-10;            % speed of light (cm/ps)
-    TimeRange = 4000;               % how wide the kernel is (ps)
+    TimeRange = 4000;                          % how wide the kernel is (ps)
     TOFTable = TOFEfficiencyTable(-TimeRange:TimeRange, BinWidth, NrBins, TOFResolution);
 
     % define which rings will be used
@@ -123,7 +123,7 @@ function Scatters = SingleScatterSimulationTOF(ActivityMap, AttenuationMap, Imag
     
     % define which detectors will be used per ring
     DetectorDifference = NrDetectors/NrDetectorsUsed;            % difference in detector index between two detectors
-    Detectors = zeros(NrRings,NrDetectorsUsed);     % structure to save which detectors are used per ring
+    Detectors = zeros(NrRings,NrDetectorsUsed);                  % structure to save which detectors are used per ring
     Detector1 = 0;
     for RingIndex1 = 1:NrRings             % this loop defines which detectors are used per ring
         for d = 1:NrDetectorsUsed
@@ -183,7 +183,7 @@ function Scatters = SingleScatterSimulationTOF(ActivityMap, AttenuationMap, Imag
                             
                             % Detector 1
                             for DetectorIndex1 = 1:NrDetectorsUsed
-                                Detector1 = Detectors(Ring1,DetectorIndex1);                                % detector index detector 1
+                                Detector1 = Detectors(Ring1,DetectorIndex1);              % detector index detector 1
                                 xDetector1 = Geometry(Ring1,Detector1,1);                 % x-coordinate detector 1
                                 yDetector1 = Geometry(Ring1,Detector1,2);                 % y-coordinate detector 1
                                 
@@ -266,7 +266,7 @@ function Scatters = SingleScatterSimulationTOF(ActivityMap, AttenuationMap, Imag
     
                                                 % calculate energy of scattered photon, detector efficiency and attenuation scalling
                                                 EnergyScatter = round(EnergyReference / (1 + (EnergyReference / 511.0)*(1 - cosd(ScatterAngle))));
-                                                EnergyScatterIndex = EnergyScatter*2;%find(attenuation_ratios(:,1) == energy_ray2);
+                                                EnergyScatterIndex = EnergyScatter*2;
     
                                                 EnnergyEfficiency = EfficiencyTable(EnergyScatterIndex,2)*EfficiencyTable(EnergyReference*2,2);
                                                 if EnnergyEfficiency == 0
@@ -301,8 +301,11 @@ function Scatters = SingleScatterSimulationTOF(ActivityMap, AttenuationMap, Imag
                                                 % geometrical correction value (first component in formula Watson, without cross sections)
                                                 GeometricalEfficiency = power(DetectorSize(1)*DetectorSize(2)*1e-2,2)*abs(cosd(Angles(RingIndex1,DetectorIndex1)))*abs(cosd(Angles(RingIndex2,DetectorIndex2))) / (4*pi*(ScatterVector1^2)*(ScatterVector2^2));
     
+                                                % setup correction (cross sections and mu)
+                                                SetupEfficiency = KleinNishina(EnergyReferenceJoule,ScatterAngle)* AttenuationMap(xIndex,yIndex,zIndex) / TotalComptonCrossSection(EnergyReferenceJoule);
+
                                                 % calculate probability
-                                                Probability = GeometricalEfficiency*EnnergyEfficiency*KleinNishina(EnergyReferenceJoule,ScatterAngle)*(AttenuationPath1*AttenuationScaled2*ActivityBinned1 + AttenuationPath2*ActivityBinned2*AttenuationScaled1);
+                                                Probability = GeometricalEfficiency*EnnergyEfficiency*SetupEfficiency*(AttenuationPath1*AttenuationScaled2*ActivityBinned1 + AttenuationPath2*ActivityBinned2*AttenuationScaled1);
                                                 
                                                 % add probability to the corresponding sinogram and add count
                                                 ScatterSlice(:, RadialIndex,AngularIndex,RingIndex2+(RingIndex1-1)*NrRingsUsed) = ...
@@ -355,22 +358,41 @@ function Probability = TOFEfficiencyTable(Offset, BinWidth, NrBins, Resolution)
 end
 
 %%__________________________________________________________________________________________________________________
-%% Klein nishina probability
+%% Klein-Nishina probability
     
 function Probability = KleinNishina(Energy,Angle)
     
     ElectronMass = 9.10938356E-31;       % mass electron (kg)
     LightSpeed = 299792458.0;            % speed of light (m/s)
+    ElectronRadius = 2.8179403227e-15;      % classic radius of electron (m)
     
     Gamma = Energy / (ElectronMass * LightSpeed * LightSpeed); % used in Klein-Nishina formula
     Ratio = 1.0 / (1.0 + Gamma * ( 1.0 - cosd(Angle) ));
+    Alpha = 0.5*(ElectronRadius^2);
   
     % Klein-Nishina formula
-    Probability = Ratio^2 * (Ratio + 1/Ratio - sind(Angle)^2);
+    Probability = Alpha * (Ratio^2) * (Ratio + 1/Ratio - sind(Angle)^2);
 
 end
 
 %%__________________________________________________________________________________________________________________
+%% Total Compton cross section
+
+function TotalCrossSection = TotalComptonCrossSection(Energy)
+    ElectronRadius = 2.8179403227e-15;      % classic radius of electron (m)
+    ElectronMass = 9.10938356E-31;          % mass electron (kg)
+    LightSpeed = 299792458.0;               % speed of light (m/s)
+
+    Alpha = 2*pi*(ElectronRadius^2);
+    
+    Gamma = Energy / (ElectronMass * LightSpeed * LightSpeed);
+
+    TotalCrossSection = Alpha * ((1+Gamma)/(Gamma^2) * ((2*(1+Gamma))/(1+2*Gamma) - 1/Gamma*log(1+2*Gamma)) + 1/(2*Gamma)*log(1+2*Gamma) - (1+3*Gamma)/((1+2*Gamma)^2));
+
+end
+
+
+%%_______________________________________________________________________________________________________________________________________________________________________________________________
 %% Scatter angle based on the 3D-coordinates of the detectors and scatter point
 
 function ScatterAngle = CalcAngleScatter(xScatter,yScatter,zScatter,xDetector1,yDetector1,zDetector1,xDetector2,yDetector2,zDetector2)
