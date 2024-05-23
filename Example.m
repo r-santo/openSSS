@@ -80,7 +80,9 @@ TOFbins = 4;
 
 %% Read the images
 % This includes both the actual image and the corresponding voxel size, given in mm
+% Attenuation image must be in cm-1
 load('./Data/AttenuationImage.mat', 'AttenuationMap','AttenuationSize');
+% Activity image can be in arbitrary unites
 load('./Data/ActivityImage.mat', 'ActivityMap','ActivitySize');
 
 % It is possible to crop and downscale the images. This is recommended to avoid
