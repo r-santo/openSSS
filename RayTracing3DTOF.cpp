@@ -52,7 +52,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 
 //Check the number of inputs and outputs
 if (nlhs != 3) {
-	mexErrMsgTxt("Error: Number of output arguments must be equal 2.");
+	mexErrMsgTxt("Error: Number of output arguments must be equal 3.");
 }
 if (nrhs != 3) {
 	mexErrMsgTxt("Error: Number of input arguments must be equal 3.");
