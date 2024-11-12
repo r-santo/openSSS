@@ -19,7 +19,12 @@
 %
 %__________________________________________________________________________________________________________________
 %% Example of openSSS
-% Example of how to load scanner geometry from CASToR into openSSS
+% Example of how to load the scanner geometry from CASToR into openSSS and
+% how to related CASToR IDs with openSSS sinogram coordinates
+%
+% Only provided as support to link with CASToR externally. For direct
+% bridging between openSSS and CASToR, check the official CASToR gitlab
+% (WORK IN PROGRESS - not yet available)
 %
 % Script by: 
 % Rodrigo JOSE SANTO - UMC Utrecht
