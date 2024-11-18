@@ -1,0 +1,30 @@
+ScannerName = 'SiemensVision600'
+TOFRange = 1000
+EnergyThreshold = 435
+TOFbins = 6
+Path2Data = 'Data'
+Path2Result = 'Results'
+
+DesiredDimensions_x = 60
+DesiredDimensions_y = 60
+DesiredDimensions_z = 32
+
+## Settings for SSS, to be balanced between speed and accuracy
+# Number of rings  and detectors (per ring) to simulate, the rest being interpolated
+NrRingsSimulated = 6
+NrDetectorsSimulated = 95
+
+# Step to sample scatter points in each diretion, in units of integer voxels
+# Example means that scatter points are sampled every 3 voxels in x
+# direction, 3 voxels in y direction and every 2 voxels in z direction
+SampleStep_x = 3
+SampleStep_y = 3
+SampleStep_z = 2
+
+# Detectors to be skipped when generating the tail-mask and backprojecting
+# events. It reduces the number of LORs considered, so it is faster but fitting 
+# may be less representative of the full distrubution of events
+AccelerationFactor = 6
+
+# Option to load files previously calculated, useful for debugging
+LoadFiles = 0
