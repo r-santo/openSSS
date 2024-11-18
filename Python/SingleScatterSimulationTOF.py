@@ -662,7 +662,7 @@ def InterpolateAllBins(
                 # Unsampled rings first
                 currentRange = Rings[k+1] - (Rings[k]+1)
                 results = Parallel(n_jobs=20)(delayed(interpolate_chunk)
-                                            (points[0], points[1], Rings[k]+1, j, currentRange, step_size_Ring2, my_interpn)
+                                            (points[0], points[1], Rings[k]+1, j, my_interpn, currentRange, step_size_Ring2)
                                             for j in range(0, NrRings, step_size_Ring2)
                                             )
                 
