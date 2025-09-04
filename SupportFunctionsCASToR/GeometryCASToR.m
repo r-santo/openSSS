@@ -38,31 +38,31 @@ function [Geometry, NormalVectors, DetectorSize] = GeometryCASToR(ScannerGeomFil
     header = fread(fileID,'*char')';
     fclose(fileID);     
     
-    NrElements = regexp(header,'.*number of elements: (\d*).*', 'tokens');
+    NrElements = regexp(header,'number of elements\s*:\s*(\d*)', 'tokens');
     NrElements = str2double(NrElements{1,1});
     
-    NrSectorsTrans = regexp(header,'.*number of rsectors: (\d*).*', 'tokens');
+    NrSectorsTrans = regexp(header,'number of rsectors\s*:\s*(\d*)', 'tokens');
     NrSectorsTrans = str2double(NrSectorsTrans{1,1});
     
-    NrSectorsAxial = regexp(header,'.*number of rsectors axial: (\d*).*', 'tokens');
+    NrSectorsAxial = regexp(header,'number of rsectors axial\s*:\s*(\d*)', 'tokens');
     NrSectorsAxial = str2double(NrSectorsAxial{1,1});
     
-    NrModulesAxial = regexp(header,'.*number of modules axial: (\d*).*', 'tokens');
+    NrModulesAxial = regexp(header,'number of modules axial\s*:\s*(\d*)', 'tokens');
     NrModulesAxial = str2double(NrModulesAxial{1,1});
     
-    NrModulesTrans = regexp(header,'.*number of modules transaxial: (\d*).*', 'tokens');
+    NrModulesTrans = regexp(header,'number of modules transaxial\s*:\s*(\d*)', 'tokens');
     NrModulesTrans = str2double(NrModulesTrans{1,1});
     
-    NrCrystalsAxial = regexp(header,'.*number of crystals axial: (\d*).*', 'tokens');
+    NrCrystalsAxial = regexp(header,'number of crystals axial\s*:\s*(\d*)', 'tokens');
     NrCrystalsAxial = str2double(NrCrystalsAxial{1,1});
     
-    NrCrystalsTrans = regexp(header,'.*number of crystals transaxial: (\d*).*', 'tokens');
+    NrCrystalsTrans = regexp(header,'number of crystals transaxial\s*:\s*(\d*)', 'tokens');
     NrCrystalsTrans = str2double(NrCrystalsTrans{1,1});
 
-    DetectorSizeAxial = regexp(header,'.*crystals size axial: (\d*).*', 'tokens');
+    DetectorSizeAxial = regexp(header,'crystals size axial\s*:\s*(\d*)', 'tokens');
     DetectorSizeAxial = str2double(DetectorSizeAxial{1,1});
 
-    DetectorSizeTrans = regexp(header,'.*crystals size trans: (\d*).*', 'tokens');
+    DetectorSizeTrans = regexp(header,'crystals size transaxial\s*:\s*(\d*)', 'tokens');
     DetectorSizeTrans = str2double(DetectorSizeTrans{1,1});
 
     DetectorSize = [DetectorSizeTrans, DetectorSizeAxial];

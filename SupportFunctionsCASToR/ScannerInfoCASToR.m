@@ -41,21 +41,21 @@ function [NrSectorsTrans, NrSectorsAxial, NrModulesAxial, NrModulesTrans, NrCrys
     header = fread(fileID,'*char')';
     fclose(fileID);     
     
-    NrSectorsTrans = regexp(header,'.*number of rsectors: (\d*).*', 'tokens');
+    NrSectorsTrans = regexp(header,'number of rsectors\s*:\s*(\d*)', 'tokens');
     NrSectorsTrans = str2double(NrSectorsTrans{1,1});
     
-    NrSectorsAxial = regexp(header,'.*number of rsectors axial: (\d*).*', 'tokens');
+    NrSectorsAxial = regexp(header,'number of rsectors axial\s*:\s*(\d*)', 'tokens');
     NrSectorsAxial = str2double(NrSectorsAxial{1,1});
     
-    NrModulesAxial = regexp(header,'.*number of modules axial: (\d*).*', 'tokens');
+    NrModulesAxial = regexp(header,'number of modules axial\s*:\s*(\d*)', 'tokens');
     NrModulesAxial = str2double(NrModulesAxial{1,1});
     
-    NrModulesTrans = regexp(header,'.*number of modules transaxial: (\d*).*', 'tokens');
+    NrModulesTrans = regexp(header,'number of modules transaxial\s*:\s*(\d*)', 'tokens');
     NrModulesTrans = str2double(NrModulesTrans{1,1});
     
-    NrCrystalsAxial = regexp(header,'.*number of crystals axial: (\d*).*', 'tokens');
+    NrCrystalsAxial = regexp(header,'number of crystals axial\s*:\s*(\d*)', 'tokens');
     NrCrystalsAxial = str2double(NrCrystalsAxial{1,1});
     
-    NrCrystalsTrans = regexp(header,'.*number of crystals transaxial: (\d*).*', 'tokens');
+    NrCrystalsTrans = regexp(header,'number of crystals transaxial\s*:\s*(\d*)', 'tokens');
     NrCrystalsTrans = str2double(NrCrystalsTrans{1,1});
 end
