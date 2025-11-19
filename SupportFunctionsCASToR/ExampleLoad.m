@@ -39,6 +39,7 @@ GeometryFile = 'foo/bar.geom';
 plot3(Geometry(:,:,1), Geometry(:,:,2), Geometry(:,:,3), '.r');
 axis equal;
 %% Create LUT to convert from CASToR IDs to sinogram coordinates
+% Slow to compute, depending on the number of total elements/crystals/detector
 IDsToSinogramLUT = IDsToSinogram(GeometryFile);
 
 %__________________________________________________________________________________________________________________
