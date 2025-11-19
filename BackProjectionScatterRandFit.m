@@ -157,8 +157,8 @@ function ScaleFactor = BackProjectionScatterRandFit(PromptSinogram, ScatterSinog
     warning('off','curvefit:fit:nonDoubleXData')
     
     % Fit a single scale factor
-    [Fitted, ~] = fit(ScatterBackProjected(:)*1e10, TailsBackProjected(:), 'poly1', 'Lower', [0, 0], 'Upper', [Inf, 0]);
-    ScaleFactor = Fitted.p1*1e10;
+    [Fitted, ~] = fit(ScatterBackProjected(:)*1e14, TailsBackProjected(:), 'poly1', 'Lower', [0, 0], 'Upper', [Inf, 0]);
+    ScaleFactor = Fitted.p1*1e14;
     
     toc;
 end
