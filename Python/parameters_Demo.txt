@@ -1,0 +1,51 @@
+# Path to scanner geometry data
+Path2Data = 'Data'
+# Path to save the intermediate results (prompts, mask, scatters)
+Path2Result = 'DemoData'
+# Path to the directory with the datafile
+Path2Datafile = 'DemoData'
+
+# Name of the datafile and of the attenuation map
+DatafileName = 'NEMA_df.Cdh'
+MuMapName = 'muMap.h33'
+
+# Names for the folders to save the intermediate results
+FolderImages = 'Images'
+FolderScatters = 'Scatters'
+
+# Flag to indicate if data reduction is applied (Angular and Axial Mashing)
+DataReduction = True
+
+# Settings for the TOF
+TOFRange = 1000
+EnergyThreshold = 435
+EnergyResolution = 0.108
+TOFbins = 6
+
+# Desured dimensions for the downscaled images for scatter estimation
+#In mm for the voxel scale
+DesiredDimensions_x = 8
+DesiredDimensions_y = 8
+DesiredDimensions_z = 8
+
+## Settings for SSS, to be balanced between speed and accuracy
+# Number of rings  and detectors (per ring) to simulate, the rest being interpolated
+NrRingsSimulated = 6
+NrDetectorsSimulated = 95
+
+# Step to sample scatter points in each diretion, in units of integer voxels
+# Example means that scatter points are sampled every 3 voxels in x
+# direction, 3 voxels in y direction and every 2 voxels in z direction
+SampleStep_x = 3
+SampleStep_y = 3
+SampleStep_z = 2
+
+# Detectors to be skipped when generating the tail-mask and backprojecting
+# events. It reduces the number of LORs considered, so it is faster but fitting 
+# may be less representative of the full distrubution of events
+AccelerationFactor = 6
+
+# Mashing (data reduction) parameters
+AngularMashing = 2
+AxialMashing = 19
+MRD = 79

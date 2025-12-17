@@ -1,5 +1,0 @@
-numpy
-scipy
-Pillow
-numba
-scikit-image
