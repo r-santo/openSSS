@@ -58,7 +58,8 @@ def ReadHeaderFile(
 
         elif 'list' in data_mode:
             tof_bins = None
-            tof_size = None
+            tof_size = re.findall(r'List TOF quantization bin size \(ps\): (\d*[.]?\d*)', header)
+            tof_size = None if len(tof_size) == 0 else float(tof_size[0])
             tof_range = float(re.findall(r'List TOF measurement range \(ps\): (\d*[.]?\d*)', header)[0])
     else:
         tof_resolution = None
