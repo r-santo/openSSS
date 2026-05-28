@@ -67,8 +67,9 @@ def ScaleScattersToPrompts(
         Normalization = np.ones(SinogramSize, np.single)
 
     try:
-        Randoms = np.load(f'{SavePath}/RandomsSinogram.npz')['arr_0']
-        Randoms = Randoms*Normalization
+        Randoms = np.load(f'{SavePath}/RandomsSinogram.npz')['arr_0'] if not SpanFlag else np.load(f'{SavePath}/RandomsSinogramMashed.npz')['arr_0'] 
+        Randoms = np.float32(Randoms / LORCounts)*Normalization
+        print('Loading Randoms for scaling')
     except:
         Randoms = np.zeros(SinogramSize, np.single)
 
@@ -87,7 +88,7 @@ def ScaleScattersToPrompts(
         # print("Start: Scaling for bin {}".format(Bin))
         SinogramsInterpolatedCurrentBin = np.load(f'{SavePath}/SSS_mashed_bin{Bin}.npz')['arr_0']
 
-        binPrompts = Prompts[:,:,:,Bin] / LORCounts
+        binPrompts = np.float32(Prompts[:,:,:,Bin]) / LORCounts
         
         if not SpanFlag:
             NrRings = SinogramIndex.shape[0]
