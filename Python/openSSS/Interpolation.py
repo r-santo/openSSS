@@ -67,13 +67,12 @@ def InterpolateScatters(
     DetectorDifference = NrDetectors / NrDetectorsUsed
     Detectors = np.zeros((NrRings, NrDetectorsUsed), dtype=int)
 
-    for RingIndex1 in range(NrRings):       #loop that defines which detectors are used
+    #loop that defines which detectors are used
+    # can be made so that different rings start at different initial detectors
+    for RingIndex1 in range(NrRings):       
         for d in range(NrDetectorsUsed):
-            if d == 0:
-                Detectors[RingIndex1, d] = d    #make sure we use the first detector
-            else:
-                Detectors[RingIndex1, d] = int(np.floor(Detectors[RingIndex1, d-1] + DetectorDifference))
-    
+            Detectors[RingIndex1, d] = int(np.floor(d*DetectorDifference))
+
     # Interpolates to get the scatter estimation for the full sinogram space
     start_time = time.time()
     if SpanFlag:

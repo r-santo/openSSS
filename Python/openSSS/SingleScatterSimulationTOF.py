@@ -159,16 +159,14 @@ def SingleScatterSimulationTOF(
     DetectorDifference = NrDetectors / NrDetectorsUsed
     Detectors = np.zeros((NrRings, NrDetectorsUsed), dtype=int)
 
-    for RingIndex1 in range(NrRings):       #loop that defines which detectors are used
+    #loop that defines which detectors are used
+    # can be made so that different rings start at different initial detectors
+    for RingIndex1 in range(NrRings):       
         for d in range(NrDetectorsUsed):
-            if d == 0:
-                Detectors[RingIndex1, d] = d    #make sure we use the first detector
-            else:
-                Detectors[RingIndex1, d] = int(np.floor(Detectors[RingIndex1, d-1] + DetectorDifference))
-
+            Detectors[RingIndex1, d] = int(np.floor(d*DetectorDifference))
 
     # Initialize structure to save sinograms
-    Scatters = np.zeros((NrBins, NrDetectors + 1, NrDetectors // 2, NrSinograms), dtype=np.float32)
+    Scatters = np.zeros((NrBins, NrDetectors + 1, int(np.ceil(NrDetectors / 2)), NrSinograms), dtype=np.float32)
 
     # -----------------------------------------------------
     # MAIN PART SSS
@@ -380,9 +378,9 @@ def bodySSS(
 
     zScatterPoint = zStart + zIndex * zVoxelSize  # z-coordinate scatter point
     # Structure to save the sinograms of each slice
-    ScatterSlice = np.zeros((NrBins, NrDetectors + 1, NrDetectors // 2, NrSinograms), dtype=np.float32)
+    ScatterSlice = np.zeros((NrBins, NrDetectors + 1, int(np.ceil(NrDetectors / 2)), NrSinograms), dtype=np.float32)
     # Structure to save how many times a LOR is used
-    ScatterCounts = np.zeros((NrBins, NrDetectors + 1, NrDetectors // 2, NrSinograms), dtype=np.float32)
+    ScatterCounts = np.zeros((NrBins, NrDetectors + 1, int(np.ceil(NrDetectors / 2)), NrSinograms), dtype=np.float32)
 
     for yIndex in range(0, yDim, SampleStep[1]):
         if np.sum(AttenuationTissue[:, yIndex, zIndex]) != 0:  # Check if any of the indices is a scatter point

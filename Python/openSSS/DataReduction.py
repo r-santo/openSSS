@@ -197,7 +197,7 @@ def SumLORsCounts(
 
     # SinogramCounts, LookupTable, LORCoordinates
     NrDetectors = Geometry.shape[1]
-    NrAngles = NrDetectors // 2
+    NrAngles = int(np.ceil(NrDetectors / 2))
     NrRings = Geometry.shape[0]
 
     sinogramLORCountsRing = np.full((NrDetectors + 1, NrAngles), Mash**2, np.float32)

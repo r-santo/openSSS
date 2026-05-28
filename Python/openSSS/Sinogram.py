@@ -57,7 +57,7 @@ def SinogramCoordinates(
     MinCrystalDifference = MinSectorDifference * NrModulesTrans * NrCrystalsTrans
 
     RadialSize = NrCrystalsPerRing - 2 * (MinCrystalDifference - 1) - 1
-    AngularSize = NrCrystalsPerRing // 2
+    AngularSize = int(np.floor(NrCrystalsPerRing // 2))
     NrSinograms = NrRings * NrRings
 
     DistanceCrystalId0toFirstSectorCenter = (NrModulesTrans * NrCrystalsTrans) // 2 if ID_Shidt else 0
@@ -96,30 +96,30 @@ def SinogramCoordinates(
             if IdB - IdA < MinCrystalDifference:
                 continue
             else:
-                if IdA + IdB >= (3 * NrCrystalsPerRing) // 2 or IdA + IdB < NrCrystalsPerRing // 2:
+                if IdA + IdB >= (3 * NrCrystalsPerRing) / 2 or IdA + IdB < NrCrystalsPerRing / 2:
                     if IdA == IdB:
-                        Radial = -NrCrystalsPerRing // 2
+                        Radial = -NrCrystalsPerRing / 2
                     else:
-                        Radial = ((IdB - IdA - 1) // 2) - ((NrCrystalsPerRing - (IdB - IdA + 1)) // 2)
+                        Radial = ((IdB - IdA - 1) / 2) - ((NrCrystalsPerRing - (IdB - IdA + 1)) / 2)
                 else:
                     if IdA == IdB:
-                        Radial = NrCrystalsPerRing // 2
+                        Radial = NrCrystalsPerRing / 2
                     else:
-                        Radial = ((NrCrystalsPerRing - (IdB - IdA + 1)) // 2) - ((IdB - IdA - 1) // 2)
+                        Radial = ((NrCrystalsPerRing - (IdB - IdA + 1)) / 2) - ((IdB - IdA - 1) / 2)
 
-                Radial = int(np.floor(Radial))
+                # Radial = int(np.floor(Radial))
 
-                if IdA + IdB < NrCrystalsPerRing // 2:
-                    Angular = (2 * IdA + NrCrystalsPerRing + Radial) // 2
+                if IdA + IdB < NrCrystalsPerRing / 2:
+                    Angular = (2 * IdA + NrCrystalsPerRing + Radial) / 2
                 else:
-                    if IdA + IdB >= (3 * NrCrystalsPerRing) // 2:
-                        Angular = (2 * IdA - NrCrystalsPerRing + Radial) // 2
+                    if IdA + IdB >= (3 * NrCrystalsPerRing) / 2:
+                        Angular = (2 * IdA - NrCrystalsPerRing + Radial) / 2
                     else:
-                        Angular = (2 * IdA - Radial) // 2
+                        Angular = (2 * IdA - Radial) / 2
 
                 # Python Coordinate
                 LORCoordinates[Detector1, Detector2, 0] = int(np.floor(Angular))
-                LORCoordinates[Detector1, Detector2, 1] = int(np.floor(Radial + RadialSize // 2))
+                LORCoordinates[Detector1, Detector2, 1] = int(np.floor(Radial + RadialSize / 2))
 
     SinogramIndex = np.zeros((NrRings, NrRings))
 

@@ -114,7 +114,7 @@ def MaskDetectors(
     NrDetectors = Geometry.shape[1]
     NrRings = Geometry.shape[0]
     
-    SinogramsTemp = np.zeros((NrDetectors + 1, NrDetectors // 2, NrRings), dtype=np.uint8)
+    SinogramsTemp = np.zeros((NrDetectors + 1, int(np.ceil(NrDetectors / 2)), NrRings), dtype=np.uint8)
     zDetector1 = Geometry[Ring1, 0, 2]
 
     for Detector1 in range(0, NrDetectors, AccelerationFactor):
@@ -199,7 +199,7 @@ def MaskGenerator(
     GridBounds = ImageSize
     NrSinograms = NrRings ** 2
 
-    Sinograms = np.zeros((NrDetectors + 1, NrDetectors // 2, NrRings, NrRings), dtype=np.uint8)
+    Sinograms = np.zeros((NrDetectors + 1, int(np.ceil(NrDetectors / 2)), NrRings, NrRings), dtype=np.uint8)
 
     ActivityMap_flat = ActivityMap.copy()
     ActivityMap_flat[ActivityMap < 1e-5] = 0
@@ -220,7 +220,7 @@ def MaskGenerator(
     SinogramOrder = SinogramIndex[:NrRings, :NrRings].T.flatten()
     SinogramOrder = np.argsort(SinogramOrder)
 
-    Sinograms = np.reshape(Sinograms, (NrDetectors + 1, NrDetectors // 2, NrSinograms))
+    Sinograms = np.reshape(Sinograms, (NrDetectors + 1, int(np.ceil(NrDetectors / 2)), NrSinograms))
     Sinograms = Sinograms[:, :, SinogramOrder]
 
     end_time = time.time()
@@ -261,7 +261,7 @@ def MaskDetectorsMashing(
     NrDetectors = Geometry.shape[1]
     NrRings = Geometry.shape[0]
     
-    SinogramsTemp = np.zeros((NrDetectors + 1, NrDetectors // 2), dtype=np.uint8)
+    SinogramsTemp = np.zeros((NrDetectors + 1, int(np.ceil(NrDetectors / 2))), dtype=np.uint8)
 
     zDetector1 = Geometry[Ring1, 0, 2]
     zDetector2 = Geometry[Ring2, 0, 2]
@@ -345,7 +345,7 @@ def MaskGeneratorMashing(
     GridBounds = ImageSize
     NrSinograms = MashedSinogramIndices.shape[0]
 
-    Sinograms = np.zeros((NrDetectors + 1, NrDetectors // 2, NrSinograms), dtype=np.uint8)
+    Sinograms = np.zeros((NrDetectors + 1, int(np.ceil(NrDetectors / 2)), NrSinograms), dtype=np.uint8)
 
     ActivityMap_flat = ActivityMap.copy()
     ActivityMap_flat[ActivityMap < 1e-5] = 0
