@@ -199,7 +199,7 @@ def sub2ind(
     - Index (int) : Linear index
     """
 
-    return X + (Y - 1) * GridSize[1] + (Z - 1) * GridSize[1] * GridSize[0]
+    return X + (Y - 1) * GridSize[0] + (Z - 1) * GridSize[1] * GridSize[0]
 
 @jit(nopython=True)
 def BoxIntersectTest(
