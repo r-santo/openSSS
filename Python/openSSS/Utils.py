@@ -131,13 +131,13 @@ def LoadImage(
     scale = np.zeros(3, dtype=float)
     size = np.zeros(3, dtype=int)
     for i in range(3):
-        temp = re.findall(rf'.*matrix size \[{i+1}\] := (\d*).*', header)
+        temp = re.findall(rf'.*matrix size\s?\[{i+1}\]\s?:=\s?(\d*).*', header)
         size[i] = int(temp[0])
 
-        temp = re.findall(rf'.*scaling factor \(mm/pixel\) \[{i+1}\] := (\d*\.*\d+).*', header)
+        temp = re.findall(rf'.*scal(?:ing|e) factor \(mm/pixel\) \[{i+1}\]\s?:=\s?(\d*\.*\d+).*', header)
         scale[i] = float(temp[0])
     
-    temp = re.findall(rf'.*name of data file := (\S*).*', header)
+    temp = re.findall(rf'.*name of data file\s?:=\s?(\S*).*', header)
     imagefile = temp[0]
 
     image = np.fromfile(os.path.dirname(Filename) + f'/{imagefile}', dtype=np.float32).reshape(size[2],size[1],size[0]).transpose((2,1,0))
