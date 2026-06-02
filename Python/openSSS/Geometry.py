@@ -67,7 +67,7 @@ def ImportCASToRGeometry(
     n_mod_ax = re.findall(r'.*number of modules axial.*: (\d*).*', header)
     n_mod_ax = int(n_mod_ax[0])
 
-    n_submod_ax = re.findall(r'.*number of submodules transaxial.*: (\d*).*', header)
+    n_submod_ax = re.findall(r'.*number of submodules axial.*: (\d*).*', header)
     n_submod_ax = int(n_submod_ax[0])
     n_mod_ax = n_mod_ax*n_submod_ax # Submodules are fused in the modules to simplify scanner geometry
 
