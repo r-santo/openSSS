@@ -133,7 +133,7 @@ if __name__ == "__main__":
 
 
     # Create Prompts
-    sumLORCounts = SumLORsCounts(Geometry, LookUpTable, SinogramIndex, Mash, Span, SinogramCounts.shape[0])
+    sumLORCounts = SumLORsCounts(Geometry, LookUpTable, SinogramIndex, Mash, Span, SinogramIndex.shape[0])
     GeneratePrompts(SavePath, Path2Datafile, DatafileName, LORCoordinates, SinogramIndex, LookUpTable, TOFbins, TOFRange, Span, Mash, Shift=DetectorShift)
 
     # Perform scatter estimation, interpolation, scaling, injection and reconstruction (using CASToR)
